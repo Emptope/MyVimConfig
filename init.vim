@@ -1,4 +1,3 @@
-
 " Enable Vim-specific features and improved functionality.
 set nocompatible  
 
@@ -11,10 +10,10 @@ set number
 " Enable relative line numbering mode.
 set relativenumber
 
-" Always show the status line at the bottom, even if you only have one window open.
+" Always show the status line at the bottom.
 set laststatus=2
 
-" This configuration makes backspace behave more reasonably, in that you can
+" This configuration makes backspace behave more reasonably so that you can
 " backspace over anything.
 set backspace=indent,eol,start
 
