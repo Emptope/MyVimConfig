@@ -84,4 +84,4 @@ nnoremap H 0
 nnoremap L $
 
 " F5 key: Compile and run the current C++ file
-nnoremap <C-F5> :w<CR>:!g++ -o output % && ./output<CR>
+nnoremap <F5> :w<CR>:!g++ -o output % && ./output<CR>
