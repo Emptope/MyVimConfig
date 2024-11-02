@@ -73,15 +73,18 @@ syntax on
 colorscheme molokai
 set background=dark
 
-" Preserve original functionality
+" Preserve original functionality.
 nnoremap <leader>H H
 nnoremap <leader>L L
 
-" Map H to jump to the beginning of the line
+" Map H to jump to the beginning of the line.
 nnoremap H 0
 
-" Map L to jump to the end of the line
+" Map L to jump to the end of the line.
 nnoremap L $
 
-" F5 key: Compile and run the current C++ file
+" F5 key: Compile and run the current C++ file.
 nnoremap <F5> :w<CR>:!g++ -o output % && ./output<CR>
+
+" Enable automatic pairing of (), {}, and [] brackets.
+set matchpairs+=(:),{:},[:]
