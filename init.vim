@@ -82,3 +82,6 @@ nnoremap H 0
 
 " Map L to jump to the end of the line
 nnoremap L $
+
+" F5 key: Compile and run the current C++ file
+nnoremap <F5> :w<CR>:!g++ -o output % && ./output<CR>
