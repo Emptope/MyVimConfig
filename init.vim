@@ -72,3 +72,13 @@ call plug#end()
 syntax on
 colorscheme molokai
 set background=dark
+
+" Preserve original functionality
+nnoremap <leader>H H
+nnoremap <leader>L L
+
+" Map H to jump to the beginning of the line
+nnoremap H 0
+
+" Map L to jump to the end of the line
+nnoremap L $
