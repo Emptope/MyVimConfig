@@ -6,6 +6,9 @@ call plug#begin('~/.vim/plugged')
 " Colorscheme
 Plug 'dracula/vim', { 'as': 'dracula' }
 
+" Add the autocompletion plugin
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
 " File explorer
 Plug 'preservim/nerdtree'
 
@@ -53,6 +56,15 @@ filetype plugin indent on    " Enable filetype detection and indentation
 " Map leader to space
 let mapleader=" "
 
+" Use <C-n> and <C-p> to navigate the completion suggestion popup menu
+" Check if the popup menu is visible before mapping these keys
+inoremap <expr> <C-n> pumvisible() ? "\<C-n>" : "\<down>"
+inoremap <expr> <C-p> pumvisible() ? "\<C-p>" : "\<up>"
+
+" Use <CR> (Enter key) to confirm the selected completion item when the popup is visible.
+" If the popup is not visible, <CR> will insert a newline as normal.
+inoremap <silent><expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
+
 " Toggle NERDTree with F2
 nnoremap <F2> :NERDTreeToggle<CR>
 
@@ -96,3 +108,54 @@ let g:NERDSpaceDelims = 1
 " :G       - Git status
 " :Gdiff   - Git diff
 " :Gblame  - Git blame
+
+"======================
+" CoC Config
+"======================
+
+" Show documentation in a floating window when hovering over a symbol.
+" Press 'K' in normal mode to trigger this (when cursor is on a symbol).
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! <SID>show_documentation()
+  " Check if the filetype is vim or help, in which case use built-in help
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    " Otherwise, use coc.nvim to show documentation (LSP hover)
+    call CocActionAsync('doHover')
+  endif
+endfunction
+
+" Add global coc.nvim extensions you want to use.
+" You need to install these extensions *inside* Vim/Neovim
+" by running :CocInstall <extension-name> after :PlugInstall.
+let g:coc_global_extensions = [
+  \ 'coc-json',       " Provides JSON language features
+  \ 'coc-tsserver',   " Provides TypeScript/JavaScript language features (requires Node.js)
+  \ 'coc-python',     " Provides Python language features (requires a Python LSP installed system-wide, e.g., pylsp, jedi-language-server)
+  \ 'coc-html',       " Provides HTML language features
+  \ 'coc-css',        " Provides CSS language features
+  \ 'coc-yaml'        " Provides YAML language features
+  \ ]
+
+" Highlight the symbol under the cursor on CursorHold
+" autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Configure diagnostic signs (errors, warnings) appearance (optional)
+" let g:coc_sign_error = '>>'
+" let g:coc_sign_warning = '>>'
+" let g:coc_sign_info = '>>'
+" let g:coc_sign_hint = '>>'
+
+" --- More Advanced coc.nvim Configurations (Optional) ---
+" You can customize many aspects like popup appearance, trigger delays, etc.
+" Refer to :h coc-configuration and the documentation of specific coc extensions
+" for comprehensive configuration options.
+
+" Example: Hide the commandline message when completion popup is visible
+" set shortmess+=c
+
+" Example: Configure specific language servers (advanced)
+" let g:coc_language_server_module_path = {
+"   \ 'pylsp': expand('~/.pyenv/versions/your_env/bin/pylsp'),
+"   \ }
