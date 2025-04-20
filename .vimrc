@@ -1,9 +1,6 @@
 "=======================
 " Vim Plugin Manager
 "=======================
-" First, install vim-plug
-" curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
 call plug#begin('~/.vim/plugged')
 
 " Colorscheme
@@ -74,6 +71,9 @@ nnoremap <F2> :NERDTreeToggle<CR>
 " Scroll in integrated terminal
 tnoremap <C-t> <C-\><C-n>
 
+" Start terminal at current folder
+nnoremap <leader>t :cd %:p:h \| belowright terminal<CR>
+
 "=======================
 " NERDTree Config
 "=======================
@@ -119,11 +119,17 @@ let g:NERDSpaceDelims = 1
 " CoC Config
 "======================
 
-" Use Tab to confirm selection or trigger completion
-inoremap <silent><expr> <Tab> 
-  \ pumvisible() ? coc#_select_confirm() :
-  \ CheckBackspace() ? "\<Tab>" :
-  \ coc#refresh()
+" Use Tab to trigger completion or navigate the completion menu
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ CheckBackspace() ? "\<TAB>" :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])<CR>" :
+      \ coc#refresh()
+
+" Use Enter to confirm selection or insert newline
+inoremap <silent><expr> <CR>
+      \ pumvisible() ? coc#pum#confirm() :
+      \ "\<CR>"
 
 " Use Shift+Tab to navigate up in the menu
 inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
@@ -147,17 +153,10 @@ function! <SID>show_documentation()
   endif
 endfunction
 
-" Add global coc.nvim extensions you want to use.
-" You need to install these extensions *inside* Vim/Neovim
+" Add global coc.nvim extensions.
+" Need to install these extensions *inside* Vim/Neovim
 " by running :CocInstall <extension-name> after :PlugInstall.
 
-" List of CoC extensions:
-" - coc-json: Provides JSON language features
-" - coc-tsserver: Provides TypeScript/JavaScript language features (requires Node.js)
-" - coc-python: Provides Python language features (requires a Python LSP installed system-wide, e.g., pylsp, jedi-language-server)
-" - coc-html: Provides HTML language features
-" - coc-css: Provides CSS language features
-" - coc-yaml: Provides YAML language features
 let g:coc_global_extensions = [
   \ 'coc-json',
   \ 'coc-tsserver',
@@ -167,9 +166,8 @@ let g:coc_global_extensions = [
   \ 'coc-yaml'
   \ ]
 
-
 " Highlight the symbol under the cursor on CursorHold
-" autocmd CursorHold * silent call CocActionAsync('highlight')
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Configure diagnostic signs (errors, warnings) appearance (optional)
 " let g:coc_sign_error = '>>'
@@ -178,7 +176,6 @@ let g:coc_global_extensions = [
 " let g:coc_sign_hint = '>>'
 
 " --- More Advanced coc.nvim Configurations (Optional) ---
-" You can customize many aspects like popup appearance, trigger delays, etc.
 " Refer to :h coc-configuration and the documentation of specific coc extensions
 " for comprehensive configuration options.
 
@@ -189,3 +186,25 @@ let g:coc_global_extensions = [
 " let g:coc_language_server_module_path = {
 "   \ 'pylsp': expand('~/.pyenv/versions/your_env/bin/pylsp'),
 "   \ }
+
+" Dracula Theme Settings in CoC
+highlight Pmenu      guibg=#282a36 guifg=#f8f8f2 ctermbg=235 ctermfg=255
+highlight PmenuSel   guibg=#44475a guifg=#50fa7b ctermbg=238 ctermfg=84
+highlight PmenuKind  guifg=#8be9fd guibg=NONE
+highlight PmenuExtra guifg=#bd93f9 guibg=NONE
+highlight PmenuSbar  guibg=#44475a
+highlight PmenuThumb guibg=#6272a4
+
+augroup CocPopupColors
+  autocmd!
+  autocmd ColorScheme * call s:custom_coc_colors()
+augroup END
+
+function! s:custom_coc_colors() abort
+  highlight Pmenu      guibg=#282a36 guifg=#f8f8f2 ctermbg=235 ctermfg=255
+  highlight PmenuSel   guibg=#44475a guifg=#50fa7b ctermbg=238 ctermfg=84
+  highlight PmenuKind  guifg=#8be9fd guibg=NONE
+  highlight PmenuExtra guifg=#bd93f9 guibg=NONE
+  highlight PmenuSbar  guibg=#44475a
+  highlight PmenuThumb guibg=#6272a4
+endfunction
