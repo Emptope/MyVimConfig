@@ -85,9 +85,6 @@ nnoremap <leader>t :cd %:p:h \| belowright terminal<CR>
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
 
-" Quit Vim if the only open window is NERDTree
-autocmd bufenter * if (winnr("$") == 1 && &filetype == "nerdtree") | quit | endif
-
 " Show icons in NERDTree
 let g:NERDTreeShowIcons=1
 
@@ -139,6 +136,7 @@ let g:airline#extensions#tabline#buffer_idx_format = {
        \ '8': '8 ',
        \ '9': '9 '
        \}
+
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
 nmap <leader>3 <Plug>AirlineSelectTab3
@@ -148,12 +146,15 @@ nmap <leader>6 <Plug>AirlineSelectTab6
 nmap <leader>7 <Plug>AirlineSelectTab7
 nmap <leader>8 <Plug>AirlineSelectTab8
 nmap <leader>9 <Plug>AirlineSelectTab9
+
 " <leader>- to previous tab
 nmap <leader>- <Plug>AirlineSelectPrevTab
+
 " <leader>+ to next tab
 nmap <leader>+ <Plug>AirlineSelectNextTab
+
 " <leader>q to exit current tab
-nmap <leader>q :bp<cr>:bd #<cr>
+nmap <leader>q :bp<CR>:bd #<CR>
 
 "=======================
 " NERDCommenter Config
