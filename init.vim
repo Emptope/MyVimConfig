@@ -40,7 +40,7 @@ set number                   " Show line numbers
 set relativenumber           " Show relative line numbers
 set mouse=a                  " Enable mouse support
 set clipboard=unnamedplus    " Use system clipboard
-set encoding=utf-8
+set encoding=utf-8	     " Set encoding style
 set tabstop=4                " Tab = 4 spaces
 set shiftwidth=4             " Auto-indent = 4 spaces
 set expandtab                " Convert tabs to spaces
@@ -51,6 +51,10 @@ set hidden                   " Allow buffer switching without saving
 set wildmenu                 " Tab-completion in command mode
 set noswapfile               " Disable swap files
 filetype plugin indent on    " Enable filetype detection and indentation
+set shell=wsl		     " Set bash as default integrated shell 
+set shellcmdflag=-e\ bash
+set shellquote=
+set shellxquote=
 
 "=======================
 " Key Mappings
