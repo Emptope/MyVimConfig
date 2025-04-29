@@ -1,108 +1,104 @@
-"=======================
-" Vim Plugin Manager
-"=======================
-" First, install vim-plug
-" curl -fLo C:/Users/<Username>/AppData/Local/nvim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+" ~/.config/nvim/init.vim
 
+"=======================
+" Vim Plugin Manager (vim-plug)
+"=======================
 call plug#begin('~/.vim/plugged')
 
 " Colorscheme
 Plug 'dracula/vim', { 'as': 'dracula' }
 
-" Add the autocompletion plugin
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" --- LSP Config ---
+Plug 'neovim/nvim-lspconfig'
 
-" File explorer
-Plug 'preservim/nerdtree'
+" --- Autocompletion Setup ---
+Plug 'hrsh7th/nvim-cmp'         " Autocompletion plugin
+Plug 'hrsh7th/cmp-nvim-lsp'     " LSP source for nvim-cmp
+Plug 'hrsh7th/cmp-buffer'       " Buffer completions
+Plug 'hrsh7th/cmp-path'         " Path completions
+Plug 'hrsh7th/cmp-cmdline'      " Command-line completions
+Plug 'L3MON4D3/LuaSnip'         " Snippet engine
+Plug 'saadparwaiz1/cmp_luasnip' " Snippet completions
 
-" Statusline
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
-" Filetype icons
-Plug 'ryanoasis/vim-devicons'
-
-" Git integration
-Plug 'tpope/vim-fugitive'
-
-" Easy commenting
-Plug 'preservim/nerdcommenter'
+" --- Plugins ---
+Plug 'preservim/nerdtree'             " File explorer
+Plug 'vim-airline/vim-airline'        " Statusline
+Plug 'vim-airline/vim-airline-themes' " Themes for Airline
+Plug 'nvim-tree/nvim-web-devicons'    " Filetype icons
+Plug 'ryanoasis/vim-devicons'         " Filetype icons
+Plug 'tpope/vim-fugitive'             " Git integration
+Plug 'airblade/vim-gitgutter'         " Git diff signs
+Plug 'preservim/nerdcommenter'        " Easy commenting
 
 call plug#end()
 
 "=======================
 " General Settings
 "=======================
-
-set nocompatible             " Nocompatible with old version
-syntax on                    " Enable syntax highlighting
-set number                   " Show line numbers
-set relativenumber           " Show relative line numbers
-set mouse=a                  " Enable mouse support
-set clipboard=unnamedplus    " Use system clipboard
-set encoding=utf-8	     " Set encoding style
-set tabstop=4                " Tab = 4 spaces
-set shiftwidth=4             " Auto-indent = 4 spaces
-set expandtab                " Convert tabs to spaces
-set smartindent              " Smart indentation
-set autoindent               " Automatic indentation
-set cursorline               " Highlight the current line
-set hidden                   " Allow buffer switching without saving
-set wildmenu                 " Tab-completion in command mode
-set noswapfile               " Disable swap files
-filetype plugin indent on    " Enable filetype detection and indentation
-set shell=wsl		     " Set bash as default integrated shell 
-set shellcmdflag=-e\ bash
-set shellquote=
-set shellxquote=
+set nocompatible              " Use Neovim defaults, not Vi compatible
+syntax on                     " Enable syntax highlighting
+set number                    " Show line numbers
+set relativenumber            " Show relative line numbers
+set mouse=a                   " Enable mouse support in all modes
+set clipboard=unnamedplus     " Use system clipboard
+set encoding=utf-8            " Set default encoding to UTF-8
+set fileformat=unix           " Use Unix line endings
+set tabstop=4                 " Number of spaces a <Tab> counts for
+set shiftwidth=4              " Size of an indent
+set expandtab                 " Use spaces instead of tabs
+set smartindent               " Insert indents automatically
+set autoindent                " Copy indent from current line when starting a new line
+set cursorline                " Highlight the current line
+set hidden                    " Allow buffer switching without saving
+set wildmenu                  " Enhanced command-line completion
+set noswapfile                " Disable swap files
+set termguicolors             " Enable 24-bit RGB color in the TUI
+filetype plugin indent on     " Enable filetype detection, plugins, and indentation
 
 "=======================
 " Key Mappings
 "=======================
+let mapleader=" "             " Map leader key to Space
 
-" Map leader to space
-let mapleader=" "
-
-" Use <C-n> and <C-p> to navigate the completion suggestion popup menu
-" Check if the popup menu is visible before mapping these keys
-inoremap <expr> <C-n> pumvisible() ? "\<C-n>" : "\<down>"
-inoremap <expr> <C-p> pumvisible() ? "\<C-p>" : "\<up>"
-
-" Use <CR> (Enter key) to confirm the selected completion item when the popup is visible.
-" If the popup is not visible, <CR> will insert a newline as normal.
-inoremap <silent><expr> <cr> pumvisible() ? "\<c-y>" : "\<cr>"
-
-" Toggle NERDTree with F2
+" Toggle NERDTree
 nnoremap <F2> :NERDTreeToggle<CR>
 
-" Scroll in integrated terminal
-tnoremap <C-t> <C-\><C-n>
+" Navigate Vim panes/splits
+" nnoremap <C-h> <C-w>h
+" nnoremap <C-j> <C-w>j
+" nnoremap <C-k> <C-w>k
+" nnoremap <C-l> <C-w>l
 
-" Start terminal at current folder
-nnoremap <leader>t :cd %:p:h \| belowright terminal<CR>
+" Terminal Navigation/Mode Switching
+" Use Ctrl+\ Ctrl+n to exit terminal mode easily
+tnoremap <Esc> <C-\><C-n>
+" Note: Your <C-t> mapping was redundant with the above
+" tnoremap <C-t> <C-\><C-n> " Original mapping
 
-"=======================
-" Help Functions
-"=======================
+" Start terminal in the current file's directory
+nnoremap <silent> <leader>t :lcd %:p:h<CR>:belowright split \| terminal<CR>i
 
-"Set the bar styles
-
-if has("termguicolors")
-      let &t_SI = "\e[6 q"   " INSERT: bar
-      let &t_EI = "\e[2 q"   " NORMAL: block
-      let &t_SR = "\e[4 q"   " VISUAL: underline
-endif
+" Cancel search highlighting
+nnoremap <silent> <Esc> :nohlsearch<CR>
 
 "=======================
 " NERDTree Config
 "=======================
-
-" Open NERDTree if no file is specified
+" Open NERDTree if no file is specified when Vim starts
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | wincmd p | endif
 
-" Show icons in NERDTree
-let g:NERDTreeShowIcons=1
+" Show hidden files in NERDTree by default
+let g:NERDTreeShowHidden=1
+
+" Exit Vim if NERDTree is the only window left
+autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" Close NERDTree window when a file is opened
+" let g:NERDTreeQuitOnOpen = 1 " Uncomment if you want this behavior
+
+" Icons require a patched font (Nerd Font)
+let g:NERDTreeShowIcons=1 " This might not work reliably without vim-devicons setup, Lua setup is better
 
 "=======================
 " Airline Config
@@ -152,7 +148,6 @@ let g:airline#extensions#tabline#buffer_idx_format = {
        \ '8': '8 ',
        \ '9': '9 '
        \}
-
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
 nmap <leader>3 <Plug>AirlineSelectTab3
@@ -175,216 +170,76 @@ nmap <leader>q :bp<CR>:bd #<CR>
 "=======================
 " NERDCommenter Config
 "=======================
-
-" Use compact syntax for toggled comments
-let g:NERDCompactSexyComs = 1
-
-" Add spaces after comment delimiters by default
-let g:NERDSpaceDelims = 1
-
-" Use <leader>c<space> to toggle comments
+let g:NERDCompactSexyComs = 1   " Use compact syntax `//comment` instead of `// comment`
+let g:NERDSpaceDelims = 1       " Add spaces after comment delimiters by default
+" Default mapping: <leader>c<space> to toggle comment
 
 "=======================
-" Fugitive Shortcuts
+" Fugitive Config (Shortcuts are commands, not config)
+"=======================
+" :G        - Git status window (or :Git)
+" :Gdiff    - Git diff
+" :Gblame   - Git blame
+" :Gcommit  - Git commit
+" :Gpush    - Git push
+" :Gpull    - Git pull
+" etc.
+
+"=======================
+" Colorscheme Activation
+"=======================
+colorscheme dracula
+set background=dark " Ensure background is set for the colorscheme
+
+"=======================
+" LSP and Completion
 "=======================
 
-" :G       - Git status
-" :Gdiff   - Git diff
-" :Gblame  - Git blame
+" Enable LSP for specific languages
 
-"======================
-" CoC Config
-"======================
+lua << EOF
+local lspconfig = require('lspconfig')
 
-" https://raw.githubusercontent.com/neoclide/coc.nvim/master/doc/coc-example-config.vim
+-- C/C++
+lspconfig.clangd.setup{}
 
-" Add global coc.nvim extensions.
-" Need to install these extensions *inside* Vim/Neovim
-" by running :CocInstall <extension-name> after :PlugInstall.
+-- Python
+lspconfig.pyright.setup{}
 
-let g:coc_global_extensions = [
-  \ 'coc-json',
-  \ 'coc-tsserver',
-  \ 'coc-python',
-  \ 'coc-html',
-  \ 'coc-css',
-  \ 'coc-yaml'
-  \ ]
 
-" Some servers have issues with backup files, see #649
-set nobackup
-set nowritebackup
+EOF
 
-" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
-" delays and poor user experience
-set updatetime=300
+" Setup nvim-cmp
 
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved
-set signcolumn=yes
+lua << EOF
 
-" Use tab for trigger completion with characters ahead and navigate
-" NOTE: There's always complete item selected by default, you may want to enable
-" no select by `"suggest.noselect": true` in your configuration file
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackspace() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+-- Import required modules
+local cmp = require'cmp'
+local luasnip = require'luasnip'
 
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+cmp.setup({
+  snippet = {
+    -- REQUIRED: configure snippet engine
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),   -- Scroll docs up
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),    -- Scroll docs down
+    ['<C-Space>'] = cmp.mapping.complete(),    -- Trigger completion
+    ['<C-e>'] = cmp.mapping.abort(),           -- Abort completion
+    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Confirm selected item
+  }),
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },  -- LSP source
+    { name = 'luasnip' },   -- Snippet source
+  }, {
+    { name = 'buffer' },    -- Buffer source
+    { name = 'path' }       -- File path source
+  })
+})
+EOF
 
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-" Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
-nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
-nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation
-nmap <silent><nowait> gd <Plug>(coc-definition)
-nmap <silent><nowait> gy <Plug>(coc-type-definition)
-nmap <silent><nowait> gi <Plug>(coc-implementation)
-nmap <silent><nowait> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call ShowDocumentation()<CR>
-
-function! ShowDocumentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
-endfunction
-
-" Highlight the symbol and its references when holding the cursor
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Symbol renaming
-nmap <leader>rn <Plug>(coc-rename)
-
-" Formatting selected code
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s)
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-augroup end
-
-" Applying code actions to the selected code block
-" Example: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap keys for applying code actions at the cursor position
-nmap <leader>ac  <Plug>(coc-codeaction-cursor)
-" Remap keys for apply code actions affect whole buffer
-nmap <leader>as  <Plug>(coc-codeaction-source)
-" Apply the most preferred quickfix action to fix diagnostic on the current line
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Remap keys for applying refactor code actions
-nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
-xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
-nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
-
-" Run the Code Lens action on the current line
-nmap <leader>cl  <Plug>(coc-codelens-action)
-
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server
-xmap if <Plug>(coc-funcobj-i)
-omap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap af <Plug>(coc-funcobj-a)
-xmap ic <Plug>(coc-classobj-i)
-omap ic <Plug>(coc-classobj-i)
-xmap ac <Plug>(coc-classobj-a)
-omap ac <Plug>(coc-classobj-a)
-
-" Remap <C-f> and <C-b> to scroll float windows/popups
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
-
-" Use CTRL-S for selections ranges
-" Requires 'textDocument/selectionRange' support of language server
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
-
-" Add `:Format` command to format current buffer
-command! -nargs=0 Format :call CocActionAsync('format')
-
-" Add `:Fold` command to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" Add `:OR` command for organize imports of the current buffer
-command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
-
-" Add (Neo)Vim's native statusline support
-" NOTE: Please see `:h coc-status` for integrations with external plugins that
-" provide custom statusline: lightline.vim, vim-airline
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-" Mappings for CoCList
-" Show all diagnostics
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
-
-" Dracula Theme Settings in CoC
-highlight Pmenu      guibg=#282a36 guifg=#f8f8f2 ctermbg=235 ctermfg=255
-highlight PmenuSel   guibg=#44475a guifg=#50fa7b ctermbg=238 ctermfg=84
-highlight PmenuKind  guifg=#8be9fd guibg=NONE
-highlight PmenuExtra guifg=#bd93f9 guibg=NONE
-highlight PmenuSbar  guibg=#44475a
-highlight PmenuThumb guibg=#6272a4
-
-augroup CocPopupColors
-  autocmd!
-  autocmd ColorScheme * call s:custom_coc_colors()
-augroup END
-
-function! s:custom_coc_colors() abort
-  highlight Pmenu      guibg=#282a36 guifg=#f8f8f2 ctermbg=235 ctermfg=255
-  highlight PmenuSel   guibg=#44475a guifg=#50fa7b ctermbg=238 ctermfg=84
-  highlight PmenuKind  guifg=#8be9fd guibg=NONE
-  highlight PmenuExtra guifg=#bd93f9 guibg=NONE
-  highlight PmenuSbar  guibg=#44475a
-  highlight PmenuThumb guibg=#6272a4
-endfunction
+" Enable true color support
+set termguicolors
