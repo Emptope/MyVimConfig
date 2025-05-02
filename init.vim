@@ -12,13 +12,13 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'neovim/nvim-lspconfig'
 
 " --- Autocompletion Setup ---
-Plug 'hrsh7th/nvim-cmp'         " Autocompletion plugin
-Plug 'hrsh7th/cmp-nvim-lsp'     " LSP source for nvim-cmp
-Plug 'hrsh7th/cmp-buffer'       " Buffer completions
-Plug 'hrsh7th/cmp-path'         " Path completions
-Plug 'hrsh7th/cmp-cmdline'      " Command-line completions
-Plug 'L3MON4D3/LuaSnip'         " Snippet engine
-Plug 'saadparwaiz1/cmp_luasnip' " Snippet completions
+Plug 'hrsh7th/nvim-cmp'               " Autocompletion plugin
+Plug 'hrsh7th/cmp-nvim-lsp'           " LSP source for nvim-cmp
+Plug 'hrsh7th/cmp-buffer'             " Buffer completions
+Plug 'hrsh7th/cmp-path'               " Path completions
+Plug 'hrsh7th/cmp-cmdline'            " Command-line completions
+Plug 'L3MON4D3/LuaSnip'               " Snippet engine
+Plug 'saadparwaiz1/cmp_luasnip'       " Snippet completions
 
 " --- Plugins ---
 Plug 'preservim/nerdtree'             " File explorer
@@ -29,6 +29,7 @@ Plug 'ryanoasis/vim-devicons'         " Filetype icons
 Plug 'tpope/vim-fugitive'             " Git integration
 Plug 'airblade/vim-gitgutter'         " Git diff signs
 Plug 'preservim/nerdcommenter'        " Easy commenting
+Plug 'ctrlpvim/ctrlp.vim'             " Fuzzy file finder
 
 call plug#end()
 
@@ -64,16 +65,17 @@ let mapleader=" "             " Map leader key to Space
 nnoremap <F2> :NERDTreeToggle<CR>
 
 " Navigate Vim panes/splits
-" nnoremap <C-h> <C-w>h
-" nnoremap <C-j> <C-w>j
-" nnoremap <C-k> <C-w>k
-" nnoremap <C-l> <C-w>l
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+tnoremap <C-h> <C-\><C-n><C-w>h
+tnoremap <C-j> <C-\><C-n><C-w>j
+tnoremap <C-k> <C-\><C-n><C-w>k
+tnoremap <C-l> <C-\><C-n><C-w>l
 
 " Terminal Navigation/Mode Switching
-" Use Ctrl+\ Ctrl+n to exit terminal mode easily
 tnoremap <Esc> <C-\><C-n>
-" Note: Your <C-t> mapping was redundant with the above
-" tnoremap <C-t> <C-\><C-n> " Original mapping
 
 " Start terminal in the current file's directory
 nnoremap <silent> <leader>t :lcd %:p:h<CR>:belowright split \| terminal<CR>i
@@ -94,11 +96,8 @@ let g:NERDTreeShowHidden=1
 " Exit Vim if NERDTree is the only window left
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
-" Close NERDTree window when a file is opened
-" let g:NERDTreeQuitOnOpen = 1 " Uncomment if you want this behavior
-
 " Icons require a patched font (Nerd Font)
-let g:NERDTreeShowIcons=1 " This might not work reliably without vim-devicons setup, Lua setup is better
+let g:NERDTreeShowIcons=1
 
 "=======================
 " Airline Config
@@ -170,7 +169,6 @@ nmap <leader>q :bp<CR>:bd #<CR>
 "=======================
 " NERDCommenter Config
 "=======================
-let g:NERDCompactSexyComs = 1   " Use compact syntax `//comment` instead of `// comment`
 let g:NERDSpaceDelims = 1       " Add spaces after comment delimiters by default
 " Default mapping: <leader>c<space> to toggle comment
 
