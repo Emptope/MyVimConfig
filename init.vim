@@ -65,14 +65,14 @@ let mapleader=" "             " Map leader key to Space
 nnoremap <F2> :NERDTreeToggle<CR>
 
 " Navigate Vim panes/splits
-nnoremap <C-h> <C-w>h
-nnoremap <C-j> <C-w>j
-nnoremap <C-k> <C-w>k
-nnoremap <C-l> <C-w>l
-tnoremap <C-h> <C-\><C-n><C-w>h
-tnoremap <C-j> <C-\><C-n><C-w>j
-tnoremap <C-k> <C-\><C-n><C-w>k
-tnoremap <C-l> <C-\><C-n><C-w>l
+nnoremap <leader>h <C-w>h
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+nnoremap <leader>l <C-w>l
+tnoremap <leader>h <C-\><C-n><C-w>h
+tnoremap <leader>j <C-\><C-n><C-w>j
+tnoremap <leader>k <C-\><C-n><C-w>k
+tnoremap <leader>l <C-\><C-n><C-w>l
 
 " Terminal Navigation/Mode Switching
 tnoremap <Esc> <C-\><C-n>
