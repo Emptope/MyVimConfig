@@ -5,8 +5,9 @@
 "=======================
 call plug#begin('~/.vim/plugged')
 
-" Colorscheme
+" Colorschemes
 Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'ghifarit53/tokyonight-vim'
 
 " --- LSP Config ---
 Plug 'neovim/nvim-lspconfig'
@@ -116,8 +117,8 @@ let g:airline#extensions#branch#enabled = 1
 " Show Git diff info
 let g:airline#extensions#hunks#enabled = 1
 
-" Enable whitespace warnings
-let g:airline#extensions#whitespace#enabled = 1
+" Disable whitespace warnings
+let g:airline#extensions#whitespace#enabled = 0
 
 " Enable filetype icons
 let g:airline#extensions#tabline#fnamemod = ':t'
@@ -126,7 +127,7 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 set noshowmode
 
 " Set a theme (alternatives: gruvbox, solarized, tomorrow, etc.)
-let g:airline_theme = 'dracula'
+let g:airline_theme = 'tokyonight'
 
 " Customize statusline sections
 let g:airline_section_y = '%{&filetype}'
@@ -170,6 +171,7 @@ nmap <leader>q :bp<CR>:bd #<CR>
 " NERDCommenter Config
 "=======================
 let g:NERDSpaceDelims = 1       " Add spaces after comment delimiters by default
+
 " Default mapping: <leader>c<space> to toggle comment
 
 "=======================
@@ -186,8 +188,12 @@ let g:NERDSpaceDelims = 1       " Add spaces after comment delimiters by default
 "=======================
 " Colorscheme Activation
 "=======================
-colorscheme dracula
-set background=dark " Ensure background is set for the colorscheme
+colorscheme tokyonight
+
+let g:tokyonight_style = 'night' " available: night, storm
+let g:tokyonight_enable_italic = 1
+
+set background=dark
 
 "=======================
 " LSP and Completion
@@ -204,6 +210,17 @@ lspconfig.clangd.setup{}
 -- Python
 lspconfig.pyright.setup{}
 
+-- Rust
+lspconfig.rust_analyzer.setup({
+  settings = {
+    ['rust-analyzer'] = {
+      cargo = { allFeatures = true },
+      checkOnSave = {
+        command = "clippy"
+      }
+    }
+  }
+})
 
 EOF
 
@@ -238,6 +255,3 @@ cmp.setup({
   })
 })
 EOF
-
-" Enable true color support
-set termguicolors
