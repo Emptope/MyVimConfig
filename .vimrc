@@ -1,12 +1,11 @@
 "=======================
 " Vim Plugin Manager
 "=======================
-" First, install vim-plug
-" curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 call plug#begin('~/.vim/plugged')
 
-" Colorscheme
+" Colorschemes
 Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'ghifarit53/tokyonight-vim'
 
 " Add the autocompletion plugin
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -37,22 +36,24 @@ call plug#end()
 "=======================
 
 set nocompatible             " Nocompatible with old version
-syntax on                    " Enable syntax highlighting
-set number                   " Show line numbers
-set relativenumber           " Show relative line numbers
-set mouse=a                  " Enable mouse support
-set clipboard=unnamedplus    " Use system clipboard
-set encoding=utf-8
-set tabstop=4                " Tab = 4 spaces
-set shiftwidth=4             " Auto-indent = 4 spaces
-set expandtab                " Convert tabs to spaces
-set smartindent              " Smart indentation
-set autoindent               " Automatic indentation
-set cursorline               " Highlight the current line
-set hidden                   " Allow buffer switching without saving
-set wildmenu                 " Tab-completion in command mode
-set noswapfile               " Disable swap files
-filetype plugin indent on    " Enable filetype detection and indentation
+syntax on                     " Enable syntax highlighting
+set number                    " Show line numbers
+set relativenumber            " Show relative line numbers
+set mouse=a                   " Enable mouse support in all modes
+set clipboard=unnamedplus     " Use system clipboard
+set encoding=utf-8            " Set default encoding to UTF-8
+set fileformat=unix           " Use Unix line endings
+set tabstop=4                 " Number of spaces a <Tab> counts for
+set shiftwidth=4              " Size of an indent
+set expandtab                 " Use spaces instead of tabs
+set smartindent               " Insert indents automatically
+set autoindent                " Copy indent from current line when starting a new line
+set cursorline                " Highlight the current line
+set hidden                    " Allow buffer switching without saving
+set wildmenu                  " Enhanced command-line completion
+set noswapfile                " Disable swap files
+set termguicolors             " Enable 24-bit RGB color in the TUI
+filetype plugin indent on     " Enable filetype detection, plugins, and indentation
 
 "=======================
 " Key Mappings
@@ -78,6 +79,16 @@ tnoremap <C-t> <C-\><C-n>
 
 " Start terminal at current folder
 nnoremap <leader>t :cd %:p:h \| belowright terminal<CR>
+
+"=======================
+" Colorscheme Activation
+"=======================
+colorscheme tokyonight
+
+let g:tokyonight_style = 'night' " available: night, storm
+let g:tokyonight_enable_italic = 1
+
+set background=dark
 
 "=======================
 " NERDTree Config
@@ -117,7 +128,7 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 set noshowmode
 
 " Set a theme (alternatives: gruvbox, solarized, tomorrow, etc.)
-let g:airline_theme = 'dracula'
+let g:airline_theme = 'tokyonight'
 
 " Customize statusline sections
 let g:airline_section_y = '%{&filetype}'
@@ -138,7 +149,6 @@ let g:airline#extensions#tabline#buffer_idx_format = {
        \ '8': '8 ',
        \ '9': '9 '
        \}
-
 nmap <leader>1 <Plug>AirlineSelectTab1
 nmap <leader>2 <Plug>AirlineSelectTab2
 nmap <leader>3 <Plug>AirlineSelectTab3
@@ -169,14 +179,6 @@ let g:NERDCompactSexyComs = 1
 let g:NERDSpaceDelims = 1
 
 " Use <leader>c<space> to toggle comments
-
-"=======================
-" Fugitive Shortcuts
-"=======================
-
-" :G       - Git status
-" :Gdiff   - Git diff
-" :Gblame  - Git blame
 
 "======================
 " CoC Config
