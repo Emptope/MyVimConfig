@@ -1,13 +1,11 @@
 "=======================
 " Vim Plugin Manager
 "=======================
-" First, install vim-plug
-" curl -fLo C:/Users/<Username>/vimfiles/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
 call plug#begin('~/.vim/plugged')
 
-" Colorscheme
+" Colorschemes
 Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'ghifarit53/tokyonight-vim'
 
 " Add the autocompletion plugin
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -25,6 +23,9 @@ Plug 'ryanoasis/vim-devicons'
 " Git integration
 Plug 'tpope/vim-fugitive'
 
+" Git diff signs for airline integration
+Plug 'airblade/vim-gitgutter'
+
 " Easy commenting
 Plug 'preservim/nerdcommenter'
 
@@ -35,22 +36,24 @@ call plug#end()
 "=======================
 
 set nocompatible             " Nocompatible with old version
-syntax on                    " Enable syntax highlighting
-set number                   " Show line numbers
-set relativenumber           " Show relative line numbers
-set mouse=a                  " Enable mouse support
-set clipboard=unnamedplus    " Use system clipboard
-set encoding=utf-8
-set tabstop=4                " Tab = 4 spaces
-set shiftwidth=4             " Auto-indent = 4 spaces
-set expandtab                " Convert tabs to spaces
-set smartindent              " Smart indentation
-set autoindent               " Automatic indentation
-set cursorline               " Highlight the current line
-set hidden                   " Allow buffer switching without saving
-set wildmenu                 " Tab-completion in command mode
-set noswapfile               " Disable swap files
-filetype plugin indent on    " Enable filetype detection and indentation
+syntax on                     " Enable syntax highlighting
+set number                    " Show line numbers
+set relativenumber            " Show relative line numbers
+set mouse=a                   " Enable mouse support in all modes
+set clipboard=unnamedplus     " Use system clipboard
+set encoding=utf-8            " Set default encoding to UTF-8
+set fileformat=unix           " Use Unix line endings
+set tabstop=4                 " Number of spaces a <Tab> counts for
+set shiftwidth=4              " Size of an indent
+set expandtab                 " Use spaces instead of tabs
+set smartindent               " Insert indents automatically
+set autoindent                " Copy indent from current line when starting a new line
+set cursorline                " Highlight the current line
+set hidden                    " Allow buffer switching without saving
+set wildmenu                  " Enhanced command-line completion
+set noswapfile                " Disable swap files
+set termguicolors             " Enable 24-bit RGB color in the TUI
+filetype plugin indent on     " Enable filetype detection, plugins, and indentation
 
 "=======================
 " Key Mappings
@@ -74,17 +77,27 @@ nnoremap <F2> :NERDTreeToggle<CR>
 " Scroll in integrated terminal
 tnoremap <C-t> <C-\><C-n>
 
+" Start terminal at current folder
+nnoremap <leader>t :cd %:p:h \| belowright terminal<CR>
+
 "=======================
-" Help Functions
+"" Terminal Config
 "=======================
 
-"Set the bar styles
+set shell=pwsh
+set shellcmdflag=-NoLogo\ -NoProfile\ -Command
+set shellquote=\"
+set shellxquote=\"
 
-if has("termguicolors")
-      let &t_SI = "\e[6 q"   " INSERT: bar
-      let &t_EI = "\e[2 q"   " NORMAL: block
-      let &t_SR = "\e[4 q"   " VISUAL: underline
-endif
+"=======================
+" Colorscheme Activation
+"=======================
+colorscheme tokyonight
+
+let g:tokyonight_style = 'night' " available: night, storm
+let g:tokyonight_enable_italic = 1
+
+set background=dark
 
 "=======================
 " NERDTree Config
@@ -94,9 +107,6 @@ endif
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
 
-" Quit Vim if the only open window is NERDTree
-autocmd bufenter * if (winnr("$") == 1 && &filetype == "nerdtree") | quit | endif
-
 " Show icons in NERDTree
 let g:NERDTreeShowIcons=1
 
@@ -104,8 +114,68 @@ let g:NERDTreeShowIcons=1
 " Airline Config
 "=======================
 
-let g:airline_theme='dark'
+" Enable airline tabline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+
+" Enable powerline font support
 let g:airline_powerline_fonts = 1
+
+" Show Git branch
+let g:airline#extensions#branch#enabled = 1
+
+" Show Git diff info
+let g:airline#extensions#hunks#enabled = 1
+
+" Enable whitespace warnings
+let g:airline#extensions#whitespace#enabled = 1
+
+" Enable filetype icons
+let g:airline#extensions#tabline#fnamemod = ':t'
+
+" Hide Vim's default mode message
+set noshowmode
+
+" Set a theme (alternatives: gruvbox, solarized, tomorrow, etc.)
+let g:airline_theme = 'tokyonight'
+
+" Customize statusline sections
+let g:airline_section_y = '%{&filetype}'
+let g:airline_section_z = '%l:%c [%p%%]'
+
+" Use <leader>1~9 to jump to tab 1~9
+let g:airline#extensions#keymap#enabled = 1
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline#extensions#tabline#buffer_idx_format = {
+       \ '0': '0 ',
+       \ '1': '1 ',
+       \ '2': '2 ',
+       \ '3': '3 ',
+       \ '4': '4 ',
+       \ '5': '5 ',
+       \ '6': '6 ',
+       \ '7': '7 ',
+       \ '8': '8 ',
+       \ '9': '9 '
+       \}
+nmap <leader>1 <Plug>AirlineSelectTab1
+nmap <leader>2 <Plug>AirlineSelectTab2
+nmap <leader>3 <Plug>AirlineSelectTab3
+nmap <leader>4 <Plug>AirlineSelectTab4
+nmap <leader>5 <Plug>AirlineSelectTab5
+nmap <leader>6 <Plug>AirlineSelectTab6
+nmap <leader>7 <Plug>AirlineSelectTab7
+nmap <leader>8 <Plug>AirlineSelectTab8
+nmap <leader>9 <Plug>AirlineSelectTab9
+
+" <leader>- to previous tab
+nmap <leader>- <Plug>AirlineSelectPrevTab
+
+" <leader>+ to next tab
+nmap <leader>+ <Plug>AirlineSelectNextTab
+
+" <leader>q to exit current tab
+nmap <leader>q :bp<CR>:bd #<CR>
 
 "=======================
 " NERDCommenter Config
@@ -119,57 +189,16 @@ let g:NERDSpaceDelims = 1
 
 " Use <leader>c<space> to toggle comments
 
-"=======================
-" Fugitive Shortcuts
-"=======================
-
-" :G       - Git status
-" :Gdiff   - Git diff
-" :Gblame  - Git blame
-
 "======================
 " CoC Config
 "======================
 
-" Use Tab to confirm selection or trigger completion
-inoremap <silent><expr> <Tab> 
-  \ pumvisible() ? coc#_select_confirm() :
-  \ CheckBackspace() ? "\<Tab>" :
-  \ coc#refresh()
+" https://raw.githubusercontent.com/neoclide/coc.nvim/master/doc/coc-example-config.vim
 
-" Use Shift+Tab to navigate up in the menu
-inoremap <silent><expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-" Helper function to check for backspace
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Show documentation in a floating window when hovering over a symbol.
-" Press 'K' in normal mode to trigger this (when cursor is on a symbol).
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-function! <SID>show_documentation()
-  " Check if the filetype is vim or help, in which case use built-in help
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    " Otherwise, use coc.nvim to show documentation (LSP hover)
-    call CocActionAsync('doHover')
-  endif
-endfunction
-
-" Add global coc.nvim extensions you want to use.
-" You need to install these extensions *inside* Vim/Neovim
+" Add global coc.nvim extensions.
+" Need to install these extensions *inside* Vim/Neovim
 " by running :CocInstall <extension-name> after :PlugInstall.
 
-" List of CoC extensions:
-" - coc-json: Provides JSON language features
-" - coc-tsserver: Provides TypeScript/JavaScript language features (requires Node.js)
-" - coc-python: Provides Python language features (requires a Python LSP installed system-wide, e.g., pylsp, jedi-language-server)
-" - coc-html: Provides HTML language features
-" - coc-css: Provides CSS language features
-" - coc-yaml: Provides YAML language features
 let g:coc_global_extensions = [
   \ 'coc-json',
   \ 'coc-tsserver',
@@ -179,26 +208,180 @@ let g:coc_global_extensions = [
   \ 'coc-yaml'
   \ ]
 
+" Some servers have issues with backup files, see #649
+set nobackup
+set nowritebackup
 
-" Highlight the symbol under the cursor on CursorHold
-" autocmd CursorHold * silent call CocActionAsync('highlight')
+" Having longer updatetime (default is 4000 ms = 4s) leads to noticeable
+" delays and poor user experience
+set updatetime=300
 
-" Configure diagnostic signs (errors, warnings) appearance (optional)
-" let g:coc_sign_error = '>>'
-" let g:coc_sign_warning = '>>'
-" let g:coc_sign_info = '>>'
-" let g:coc_sign_hint = '>>'
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved
+set signcolumn=yes
 
-" --- More Advanced coc.nvim Configurations (Optional) ---
-" You can customize many aspects like popup appearance, trigger delays, etc.
-" Refer to :h coc-configuration and the documentation of specific coc extensions
-" for comprehensive configuration options.
+" Use tab for trigger completion with characters ahead and navigate
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-" Example: Hide the commandline message when completion popup is visible
-" set shortmess+=c
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-" Example: Configure specific language servers (advanced)
-" let g:coc_language_server_module_path = {
-"   \ 'pylsp': expand('~/.pyenv/versions/your_env/bin/pylsp'),
-"   \ }
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
+" Use <c-space> to trigger completion
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
+nmap <silent><nowait> [g <Plug>(coc-diagnostic-prev)
+nmap <silent><nowait> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation
+nmap <silent><nowait> gd <Plug>(coc-definition)
+nmap <silent><nowait> gy <Plug>(coc-type-definition)
+nmap <silent><nowait> gi <Plug>(coc-implementation)
+nmap <silent><nowait> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call ShowDocumentation()<CR>
+
+function! ShowDocumentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" Symbol renaming
+nmap <leader>rn <Plug>(coc-rename)
+
+" Formatting selected code
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s)
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+augroup end
+
+" Applying code actions to the selected code block
+" Example: `<leader>aap` for current paragraph
+xmap <leader>a  <Plug>(coc-codeaction-selected)
+nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying code actions at the cursor position
+nmap <leader>ac  <Plug>(coc-codeaction-cursor)
+" Remap keys for apply code actions affect whole buffer
+nmap <leader>as  <Plug>(coc-codeaction-source)
+" Apply the most preferred quickfix action to fix diagnostic on the current line
+nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Remap keys for applying refactor code actions
+nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
+xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+
+" Run the Code Lens action on the current line
+nmap <leader>cl  <Plug>(coc-codelens-action)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+
+" Remap <C-f> and <C-b> to scroll float windows/popups
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" Use CTRL-S for selections ranges
+" Requires 'textDocument/selectionRange' support of language server
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Add `:Format` command to format current buffer
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Add `:Fold` command to fold current buffer
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+
+" Add (Neo)Vim's native statusline support
+" NOTE: Please see `:h coc-status` for integrations with external plugins that
+" provide custom statusline: lightline.vim, vim-airline
+set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
+
+" Mappings for CoCList
+" Show all diagnostics
+nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" Manage extensions
+nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" Show commands
+nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" Find symbol of current document
+nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item
+nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+" Do default action for previous item
+nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+" Resume latest coc list
+nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+" Dracula Theme Settings in CoC
+highlight Pmenu      guibg=#282a36 guifg=#f8f8f2 ctermbg=235 ctermfg=255
+highlight PmenuSel   guibg=#44475a guifg=#50fa7b ctermbg=238 ctermfg=84
+highlight PmenuKind  guifg=#8be9fd guibg=NONE
+highlight PmenuExtra guifg=#bd93f9 guibg=NONE
+highlight PmenuSbar  guibg=#44475a
+highlight PmenuThumb guibg=#6272a4
+
+augroup CocPopupColors
+  autocmd!
+  autocmd ColorScheme * call s:custom_coc_colors()
+augroup END
+
+function! s:custom_coc_colors() abort
+  highlight Pmenu      guibg=#282a36 guifg=#f8f8f2 ctermbg=235 ctermfg=255
+  highlight PmenuSel   guibg=#44475a guifg=#50fa7b ctermbg=238 ctermfg=84
+  highlight PmenuKind  guifg=#8be9fd guibg=NONE
+  highlight PmenuExtra guifg=#bd93f9 guibg=NONE
+  highlight PmenuSbar  guibg=#44475a
+  highlight PmenuThumb guibg=#6272a4
+endfunction
