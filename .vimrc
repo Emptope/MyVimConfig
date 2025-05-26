@@ -118,8 +118,8 @@ let g:airline#extensions#branch#enabled = 1
 " Show Git diff info
 let g:airline#extensions#hunks#enabled = 1
 
-" Enable whitespace warnings
-let g:airline#extensions#whitespace#enabled = 1
+" Disable whitespace warnings
+let g:airline#extensions#whitespace#enabled = 0
 
 " Enable filetype icons
 let g:airline#extensions#tabline#fnamemod = ':t'
