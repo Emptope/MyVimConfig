@@ -2,7 +2,7 @@
 set guifont=MesloLGS\ NF:h14
 
 " Set GUI color scheme
-colorscheme dracula
+colorscheme tokyonight
 
 " Load main vimrc
 source C:/Users/<Username>/_vimrc"
