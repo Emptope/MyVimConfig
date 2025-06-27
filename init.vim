@@ -95,7 +95,7 @@ autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | wincmd p |
 let g:NERDTreeShowHidden=1
 
 " Exit Vim if NERDTree is the only window left
-autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+" autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
 
 " Icons require a patched font (Nerd Font)
 let g:NERDTreeShowIcons=1
@@ -175,7 +175,7 @@ let g:NERDSpaceDelims = 1       " Add spaces after comment delimiters by default
 " Default mapping: <leader>c<space> to toggle comment
 
 "=======================
-" Fugitive Config (Shortcuts are commands, not config)
+" Fugitive Shortcuts
 "=======================
 " :G        - Git status window (or :Git)
 " :Gdiff    - Git diff
@@ -215,12 +215,17 @@ lspconfig.rust_analyzer.setup({
   settings = {
     ['rust-analyzer'] = {
       cargo = { allFeatures = true },
-      checkOnSave = {
+      check = {
         command = "clippy"
       }
     }
   }
 })
+
+-- Bash
+lspconfig.bashls.setup{
+  capabilities = require('cmp_nvim_lsp').default_capabilities()
+}
 
 EOF
 
@@ -251,7 +256,6 @@ cmp.setup({
     { name = 'luasnip' },   -- Snippet source
   }, {
     { name = 'buffer' },    -- Buffer source
-    { name = 'path' }       -- File path source
   })
 })
 EOF
