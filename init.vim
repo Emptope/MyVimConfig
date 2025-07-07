@@ -6,7 +6,7 @@
 call plug#begin('~/.vim/plugged')
 
 " Colorschemes
-Plug 'dracula/vim', { 'as': 'dracula' }
+" Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'ghifarit53/tokyonight-vim'
 
 " --- LSP Config ---
@@ -165,7 +165,18 @@ nmap <leader>- <Plug>AirlineSelectPrevTab
 nmap <leader>+ <Plug>AirlineSelectNextTab
 
 " <leader>q to exit current tab
-nmap <leader>q :bp<CR>:bd #<CR>
+nnoremap <leader>q :lua CloseCurrentBuffer()<CR>
+
+lua << EOF
+function CloseCurrentBuffer()
+  local current = vim.api.nvim_get_current_buf()
+  local buffers = vim.fn.getbufinfo({ buflisted = 1 })
+  if #buffers > 1 then
+    vim.cmd("bnext")
+  end
+  vim.cmd("bdelete " .. current)
+end
+EOF
 
 "=======================
 " NERDCommenter Config
