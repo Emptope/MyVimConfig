@@ -214,15 +214,22 @@ set background=dark
 
 lua << EOF
 local lspconfig = require('lspconfig')
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- C/C++
-lspconfig.clangd.setup{}
+lspconfig.clangd.setup{
+  cmd = { "clangd", "--header-insertion=never" },
+  capabilities = capabilities,
+}
 
 -- Python
-lspconfig.pyright.setup{}
+lspconfig.pyright.setup{
+  capabilities = capabilities,
+}
 
 -- Rust
 lspconfig.rust_analyzer.setup({
+  capabilities = capabilities,
   settings = {
     ['rust-analyzer'] = {
       cargo = { allFeatures = true },
@@ -235,9 +242,8 @@ lspconfig.rust_analyzer.setup({
 
 -- Bash
 lspconfig.bashls.setup{
-  capabilities = require('cmp_nvim_lsp').default_capabilities()
+  capabilities = capabilities,
 }
-
 EOF
 
 " Setup nvim-cmp
