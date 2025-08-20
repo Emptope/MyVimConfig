@@ -6,7 +6,6 @@
 call plug#begin('~/.vim/plugged')
 
 " Colorschemes
-" Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'ghifarit53/tokyonight-vim'
 
 " --- LSP Config ---
@@ -15,22 +14,14 @@ Plug 'neovim/nvim-lspconfig'
 " --- Autocompletion Setup ---
 Plug 'hrsh7th/nvim-cmp'               " Autocompletion plugin
 Plug 'hrsh7th/cmp-nvim-lsp'           " LSP source for nvim-cmp
-Plug 'hrsh7th/cmp-buffer'             " Buffer completions
-Plug 'hrsh7th/cmp-path'               " Path completions
-Plug 'hrsh7th/cmp-cmdline'            " Command-line completions
-Plug 'L3MON4D3/LuaSnip'               " Snippet engine
-Plug 'saadparwaiz1/cmp_luasnip'       " Snippet completions
 
 " --- Plugins ---
-Plug 'preservim/nerdtree'             " File explorer
+Plug 'L3MON4D3/LuaSnip'               " Lua snip
+Plug 'nvim-tree/nvim-tree.lua'        " File explorer
+Plug 'nvim-tree/nvim-web-devicons'    " Filetype icons
 Plug 'vim-airline/vim-airline'        " Statusline
 Plug 'vim-airline/vim-airline-themes' " Themes for Airline
-Plug 'nvim-tree/nvim-web-devicons'    " Filetype icons
-Plug 'ryanoasis/vim-devicons'         " Filetype icons
-Plug 'tpope/vim-fugitive'             " Git integration
-Plug 'airblade/vim-gitgutter'         " Git diff signs
 Plug 'preservim/nerdcommenter'        " Easy commenting
-Plug 'ctrlpvim/ctrlp.vim'             " Fuzzy file finder
 
 call plug#end()
 
@@ -63,7 +54,7 @@ filetype plugin indent on     " Enable filetype detection, plugins, and indentat
 let mapleader=" "             " Map leader key to Space
 
 " Toggle NERDTree
-nnoremap <F2> :NERDTreeToggle<CR>
+nnoremap <F2> :NvimTreeOpen<CR>
 
 " Navigate Vim panes/splits
 nnoremap <leader>h <C-w>h
@@ -85,20 +76,36 @@ nnoremap <silent> <leader>t :lcd %:p:h<CR>:belowright split \| terminal<CR>i
 nnoremap <silent> <Esc> :nohlsearch<CR>
 
 "=======================
-" NERDTree Config
+" Nvim Tree Config
 "=======================
-" Open NERDTree if no file is specified when Vim starts
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | wincmd p | endif
 
-" Show hidden files in NERDTree by default
-let g:NERDTreeShowHidden=1
+lua << EOF
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
-" Exit Vim if NERDTree is the only window left
-" autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+-- optionally enable 24-bit colour
+vim.opt.termguicolors = true
 
-" Icons require a patched font (Nerd Font)
-let g:NERDTreeShowIcons=1
+-- empty setup using defaults
+require("nvim-tree").setup()
+
+-- OR setup with some options
+require("nvim-tree").setup({
+  sort = {
+    sorter = "case_sensitive",
+  },
+  view = {
+    width = 30,
+  },
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = true,
+  },
+})
+EOF
 
 "=======================
 " Airline Config
@@ -186,17 +193,6 @@ let g:NERDSpaceDelims = 1       " Add spaces after comment delimiters by default
 " Default mapping: <leader>c<space> to toggle comment
 
 "=======================
-" Fugitive Shortcuts
-"=======================
-" :G        - Git status window (or :Git)
-" :Gdiff    - Git diff
-" :Gblame   - Git blame
-" :Gcommit  - Git commit
-" :Gpush    - Git push
-" :Gpull    - Git pull
-" etc.
-
-"=======================
 " Colorscheme Activation
 "=======================
 colorscheme tokyonight
@@ -245,8 +241,6 @@ lspconfig.bashls.setup{
   capabilities = capabilities,
 }
 EOF
-
-" Setup nvim-cmp
 
 lua << EOF
 
