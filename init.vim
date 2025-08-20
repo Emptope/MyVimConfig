@@ -53,8 +53,8 @@ filetype plugin indent on     " Enable filetype detection, plugins, and indentat
 "=======================
 let mapleader=" "             " Map leader key to Space
 
-" Toggle NERDTree
-nnoremap <F2> :NvimTreeOpen<CR>
+" Toggle NvimTree
+nnoremap <F2> :NvimTreeToggle<CR>
 
 " Navigate Vim panes/splits
 nnoremap <leader>h <C-w>h
@@ -76,7 +76,7 @@ nnoremap <silent> <leader>t :lcd %:p:h<CR>:belowright split \| terminal<CR>i
 nnoremap <silent> <Esc> :nohlsearch<CR>
 
 "=======================
-" Nvim Tree Config
+" NvimTree Config
 "=======================
 
 lua << EOF
